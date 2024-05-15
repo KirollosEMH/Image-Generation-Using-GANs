@@ -68,7 +68,7 @@ path_cDCGAN_Gray_Flip_128 = 'Trained-Models\CDC_gen_450.pth'
 # WGANs Gray
 #######################################
 path_CWGAN_Gray_Flip_64 = 'Trained-Models\\cWGAN_Gray_Scale_64_Flipped.pth'
-# path_CWGAN_Gray_No_Flip_128=''
+path_CWGAN_Gray_No_Flip_128 = 'Trained-Models\\CWGAN_Gray_No_Flip_128_Gen_140.pth'
 
 
 # WGANs Coloured
@@ -95,7 +95,7 @@ gen_cDCGAN_Colored_Flip_64 = torch.load(path_cDCGAN_Colored_Flip_64)
 gen_cDCGAN_Gray_Flip_128 = torch.load(path_cDCGAN_Gray_Flip_128)
 
 gen_WGAN_Gray_Flip_64 = torch.load(path_CWGAN_Gray_Flip_64)
-# gen_WGAN_Gray_No_Flip_128 = torch.load(path_CWGAN_Gray_No_Flip_128)
+gen_WGAN_Gray_No_Flip_128 = torch.load(path_CWGAN_Gray_No_Flip_128)
 
 gen_CWGAN_Colored_Flip_128 = torch.load(path_CWGAN_Colored_Flip_128)
 gen_CWGAN_Colored_No_Flip_128 = torch.load(path_CWGAN_Colored_No_Flip_128)
@@ -123,8 +123,9 @@ gen_cDCGAN_Colored_Flip_64_Model.load_state_dict(
     gen_cDCGAN_Colored_Flip_64)
 gen_cDCGAN_Colored_Flip_64_Model.eval()
 
-gen_cDCGAN_Gray_Flip_128_Model = cDCGAN_Generator_Gray_128_Flip(100, 3, 64, 3, 128, 100)
-gen_cDCGAN_Gray_Flip_128_Model.load_state_dict(gen_cDCGAN_Gray_Flip_128) 
+gen_cDCGAN_Gray_Flip_128_Model = cDCGAN_Generator_Gray_128_Flip(
+    100, 3, 64, 3, 128, 100)
+gen_cDCGAN_Gray_Flip_128_Model.load_state_dict(gen_cDCGAN_Gray_Flip_128)
 gen_cDCGAN_Gray_Flip_128_Model.eval()
 
 
@@ -133,7 +134,12 @@ gen_WGAN_Gray_Flip_64_Model = cWGAN_Generator_64(
 gen_WGAN_Gray_Flip_64_Model.load_state_dict(
     gen_WGAN_Gray_Flip_64)
 gen_WGAN_Gray_Flip_64_Model.eval()
-# gen_WGAN_Gray_No_Flip_128 = cWGAN_Generator_Gray_128(100, 3, 64, 3, 128, 100).load_state_dict(gen_WGAN_Gray_No_Flip_128) -> Missing Path
+
+gen_WGAN_Gray_No_Flip_128_Model = cWGAN_Generator_Gray_128(
+    100, 3, 64, 3, 128, 100)
+gen_WGAN_Gray_No_Flip_128_Model.load_state_dict(gen_WGAN_Gray_No_Flip_128)
+gen_WGAN_Gray_No_Flip_128_Model.eval()
+
 
 gen_CWGAN_Colored_Flip_128_Model = cWGAN_Generator_Colored_128(
     100, 3, 64, 3, 128, 100)
@@ -284,6 +290,7 @@ def main_page(submitted: bool, num_outputs: int,
                 elif refine == "CWGAN-64-F-NC":
                     model = gen_WGAN_Gray_Flip_64_Model
                 elif refine == "CWGAN-64-F-C":
+                    # gen_CWGAN_Colored_Flip_64_lr_2e_4_Model
                     model = gen_CWGAN_Colored_Flip_64_lr_2e_4_Model
                 elif refine == "CWGAN-64-C":
                     model = gen_CWGAN_Colored_No_Flip_64_Model
@@ -293,8 +300,8 @@ def main_page(submitted: bool, num_outputs: int,
                     model = gen_CWGAN_Colored_Flip_128_Model
                 elif refine == "CWGAN-128-C":
                     model = gen_CWGAN_Colored_No_Flip_128_Model
-                # elif refine=="CWGAN-128-NC":
-                #     model = gen_CWGAN_Colored_Flip_128
+                elif refine == "CWGAN-128-NC":
+                    model = gen_WGAN_Gray_No_Flip_128_Model
 
                 output = generate_image(model, flag, num_outputs, label)
                 # output = output[0]
