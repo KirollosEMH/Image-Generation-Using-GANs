@@ -19,16 +19,25 @@ import matplotlib.pyplot as plt
 from torchvision.utils import make_grid
 from torchvision.utils import save_image
 
+from Models.cdcgan_coloured_64_flip import cDCGAN_Generator_Colored_64_Flip 
+from Models.cdcgan_gray_128_flip import cDCGAN_Generator_Gray_128_Flip
+from Models.cwgan_128_coloured import cWGAN_Generator_Colored_128
+from Models.cwgan_128_gray import cWGAN_Generator_Gray_128
+from Models.gan_genartor_coloured_128 import Gan_Generator_Colured
+from Models.gan_generator_gray_128 import Gan_Generator_Gray
+from Models.cwgan_64 import cWGAN_Generator_64
+
+
 # STEPS:
-# 1-put the path of the model
-# 2-Put Your Generator Model
+# 1- put the path of the model
+# 2- Put Your Gan_Generator_Colured Model
 # 3- Put UR Z_DIM
-# 4- Instantiate the generator
+# 4- Instantiate the Gan_generator_Colured
 # 5- Move to GPU
 # 6- Load the state dict
-# 7- Optionally move the model to GPU if available
-# 8- Set the model to evaluation mode
-# 9- Define a function to get noise
+# 7-  Optionally move the model to GPU if available
+# 8-  Set the model to evaluation mode
+# 9-  Define a function to get noise
 # 10- Define a function to show tensor images
 # 11- Define a function to generate image
 # 12- Generate an image using the model
@@ -43,110 +52,117 @@ from torchvision.utils import save_image
 ####
 
 # 1-put the path of the model here
-path_CGAN_Colored = "C:\\Users\\Seif Yasser\\Desktop\\Artificial intelligence\\Project\\local-repo\\Image-Generation-Using-Generative-AI\\cGANs-Colored\\Architecture 1\\gen_500_epochs.pth"
-path_CGAN_Gray = ""
 
-path_DCGAN_Colored = ""
-path_DCGAN_Gray = ""
+# GANs
+#######################################
+path_cGAN_Colored_128 = 'Trained-Models\GAN_Colored_128_Gen_750.pth'
+path_cGAN_Gray_128 = 'Trained-Models\GAN_Gray_gen_500_epochs.pth'
 
-path_WGAN_Colored = ""
-path_WGAN_Gray = ""
+
+# DCGANs Flipped
+#######################################
+path_cDCGAN_Colored_Flip_64='Trained-Models\CDCGAN_Colored_64_Flipped_Gen_500.pth'
+path_cDCGAN_Gray_Flip_128='Trained-Models\CDCGANs_Gray_Scale_128_500.pth'
+
+
+# WGANs Gray
+#######################################
+path_CWGAN_Gray_Flip_64='Trained-Models\cWGAN_Gray_Scale_64_Flipped.pth'
+# path_CWGAN_Gray_No_Flip_128=''
+
+
+# WGANs Coloured
+#######################################
+path_CWGAN_Colored_Flip_128='Trained-Models\CWGAN_128_Flip_Coloured_gen_600.pth'
+path_CWGAN_Colored_No_Flip_128='Trained-Models\CWGAN_128_No_Flip_Coloured_gen_375.pth'
+path_CWGAN_Colored_Flip_64_lr_2e_4='Trained-Models\CWGAN_64_Flipped_Colored_lr_2e-4_gen_400.pth'
+path_CWGAN_Colored_Flip_64_lr_5e_4='Trained-Models\CWGAN_64_Flipped_Colored_lr_5e-4_gen_700.pth'
+path_CWGAN_Colored_No_Flip_64='Trained-Models\Gen_CWGAN_No_Flip_64_Colored_525.pth'
+
+
 
 # Will be passed by the deployment as an argument with if condition with if selection from the user
-model = torch.load(path_CGAN_Colored)
 
-# 2-Put Your Generator Model Here
-
-
-class Generator(torch.nn.Module):
-    def __init__(self, z_dim):
-        super(Generator, self).__init__()
-        self.gen = nn.Sequential(
-            nn.Linear(z_dim, 512),
-            nn.ReLU(True),
-            nn.Linear(512, 1024),
-            nn.ReLU(True),
-            nn.Linear(1024, 2048),
-            nn.ReLU(True),
-            nn.Linear(2048, 16384),  # Output size to match 128x128 image
-            nn.Tanh()
-        )
-
-    def forward(self, x):
-        # Reshape to N x 1 x 128 x 128
-        return self.gen(x).view(-1, 3, 128, 128)
+# make torch on cuda
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-# 3- Put UR Z_DIM HERE
-z_dim = 64
-# 4- Instantiate the generator
-gen = Generator(z_dim)
+# Loading all models
 
-# 5- Move to GPU "DO NOT CHANGE"
-gen = gen.to('cuda')
+gen_cGAN_Colored_128 = torch.load(path_cGAN_Colored_128)
+gen_cGAN_Gray_128 = torch.load(path_cGAN_Gray_128)
 
+gen_cDCGAN_Colored_Flip_64 = torch.load(path_cDCGAN_Colored_Flip_64)
+gen_cDCGAN_Gray_Flip_128 = torch.load(path_cDCGAN_Gray_Flip_128)
 
-# Load the state dict "DO NOT CHANGE"
-my_model = Generator(z_dim)
-# load the state dict "DO NOT CHANGE"
-my_model.load_state_dict(model)
-# Optionally move the model to GPU if available
-if torch.cuda.is_available():
-    my_model.cuda()
-# Set the model to evaluation mode
-my_model.eval()
+gen_WGAN_Gray_Flip_64 = torch.load(path_CWGAN_Gray_Flip_64)
+# gen_WGAN_Gray_No_Flip_128 = torch.load(path_CWGAN_Gray_No_Flip_128)
 
+gen_CWGAN_Colored_Flip_128 = torch.load(path_CWGAN_Colored_Flip_128)
+gen_CWGAN_Colored_No_Flip_128 = torch.load(path_CWGAN_Colored_No_Flip_128)
+gen_CWGAN_Colored_Flip_64_lr_2e_4 = torch.load(path_CWGAN_Colored_Flip_64_lr_2e_4)
+gen_CWGAN_Colored_Flip_64_lr_5e_4 = torch.load(path_CWGAN_Colored_Flip_64_lr_5e_4)
+gen_CWGAN_Colored_No_Flip_64 = torch.load(path_CWGAN_Colored_No_Flip_64)
 
-def get_noise(n_samples, z_dim, device='cuda'):
-    return torch.randn(n_samples, z_dim, device=device)
+print("Models Loaded Successfully")
 
 
-# Will be Changed if the Images are Gray-Scaled
-def show_tensor_images(image_tensor, num_images=25, size=(3, 128, 128)):
-    print(image_tensor.shape)
-    image_unflat = image_tensor.detach().cpu()
-    image_grid = make_grid(image_unflat[:num_images], nrow=5)
-    plt.imshow(image_grid.permute(1, 2, 0))
-    plt.show()
+# Create objects of each model
+
+gen_cGAN_Colored_128 = Gan_Generator_Colured(64).load_state_dict(gen_cGAN_Colored_128)
+# gen_cGAN_Gray_128 = Gan_Generator_Gray(64).load_state_dict(gen_cGAN_Gray_128) -> error
+
+gen_cDCGAN_Colored_Flip_64 = cDCGAN_Generator_Colored_64_Flip(100, 3, 64, 3, 64, 100).load_state_dict(gen_cDCGAN_Colored_Flip_64)
+# gen_cDCGAN_Gray_Flip_128 = cDCGAN_Generator_Gray_128_Flip(100, 3, 64, 3, 128, 100).load_state_dict(gen_cDCGAN_Gray_Flip_128) -> error
+
+gen_WGAN_Gray_Flip_64 = cWGAN_Generator_64(100, 3, 64, 3, 64, 100).load_state_dict(gen_WGAN_Gray_Flip_64)
+# gen_WGAN_Gray_No_Flip_128 = cWGAN_Generator_Gray_128(100, 3, 64, 3, 128, 100).load_state_dict(gen_WGAN_Gray_No_Flip_128) -> Missing Path
+
+gen_CWGAN_Colored_Flip_128 = cWGAN_Generator_Colored_128(100, 3, 64, 3, 128, 100).load_state_dict(gen_CWGAN_Colored_Flip_128)
+gen_CWGAN_Colored_No_Flip_128 = cWGAN_Generator_Colored_128(100, 3, 64, 3, 128, 100).load_state_dict(gen_CWGAN_Colored_No_Flip_128)
+
+gen_CWGAN_Colored_Flip_64_lr_2e_4 = cWGAN_Generator_64(100, 3, 64, 3, 64, 100).load_state_dict(gen_CWGAN_Colored_Flip_64_lr_2e_4)
+gen_CWGAN_Colored_Flip_64_lr_5e_4 = cWGAN_Generator_64(100, 3, 64, 3, 64, 100).load_state_dict(gen_CWGAN_Colored_Flip_64_lr_5e_4)
+
+gen_CWGAN_Colored_No_Flip_64 = cWGAN_Generator_64(100, 3, 64, 3, 64, 100).load_state_dict(gen_CWGAN_Colored_No_Flip_64)
 
 
-def generate_image(model):
+z_dim_2 = 64
+z_dim = 100
+
+
+def get_noise( z_dim, device='cuda'):
+    return torch.randn( z_dim, device=device)
+
+
+# fake_noise=get_noise(2,100)
+
+
+
+def generate_image(model,fake_noise,label = None):
+    
     """
     Generate an image using the given model.
 
     Args:
       model (torch.nn.Module): The generative model.
+      label (int, optional): The label to generate the image for. If None, generate an image without a label.
 
     Returns:
       PIL.Image.Image: The generated image.
     """
-
-    # Generate an image from the noise vector
-    with torch.no_grad():
-        generated_image = my_model(fake_noise)
-
-    # Remove the extra dimension from the generated image tensor
-    # show_tensor_images(generated_image)
-    # generated_image = generated_image.squeeze()
-
-    # Convert the generated image tensor to a PIL image
-    # generated_image = transforms.ToPILImage()(generated_image)
-
+    
+    if label is None:
+        with torch.no_grad():
+            generated_image = model(fake_noise)
+    
+    else:
+        with torch.no_grad():
+            generated_image = model(fake_noise, label)
+    
     return generated_image
 
 
-fake_noise = get_noise(96, 64).to('cuda')
-
-fake = my_model(fake_noise)
-# len(fake)
-# show_tensor_images(fake)
-output = generate_image(my_model)
-# type(output)
-# output.shape
-img = output[0]
-transform = T.ToPILImage()
-# img.shape
-save_image(img, 'img1generated.png')
 ##########################################
 
 
@@ -164,22 +180,32 @@ def configure_sidebar() -> None:
             with st.expander(":primary[**Refine your output here**]"):
                 num_outputs = st.slider(
                     "Number of images to Generate", value=1, min_value=1, max_value=4)
-                scheduler = st.selectbox(
-                    'Image to Generate', ('Shoe', 'Boot', 'Sandal'))
-                Colored = st.selectbox(
-                    'Colored?', ('YES', 'NO'))
+                
+                # Colored = st.selectbox(
+                #     'Colored?', ('YES', 'NO'))
+                # if Colored=="YES":
+                    # refine = st.selectbox(
+                    # "Select GANs Model to use", ("GAN","cDCGAN-64","CWGAN-64-F","CWGAN-64", "CWGAN-128-F","CWGAN-128"))
+                # else:
                 refine = st.selectbox(
-                    "Select GANs Model to use)", ("GAN", "CGAN", "CDCGAN", "CWGAN"))
+                    "Select GANs Model to use", ("GAN-C","GAN-NC","cDCGAN-64-C","cDCGAN-128-NC","CWGAN-64-F-NC","CWGAN-64-F-C","CWGAN-64-C","CWGAN-64-NC", "CWGAN-128-F-C","CWGAN-128-C","CWGAN-128-NC"))
+                
+                if refine=="GAN-C" or refine=="GAN-NC":
+                    scheduler=None
+                else:
+                    scheduler = st.selectbox(
+                        'Image to Generate', ('Shoe', 'Boot', 'Sandal'))
+                                   
 
             # The Big Red "Submit" Button!
             submitted = st.form_submit_button(
                 "Generate", type="primary", use_container_width=True)
 
-        return submitted, num_outputs, scheduler, Colored, refine
+        return submitted, num_outputs, scheduler, refine
 
 
 def main_page(submitted: bool, num_outputs: int,
-              scheduler: str, Colored: str, refine: str,) -> None:
+              scheduler: str,  refine: str) -> None:
     if submitted:
         with st.status('👩🏾‍🍳 Whipping up your Choices into art...', expanded=True) as status:
             st.write("⚙️ Model initiated")
@@ -190,10 +216,56 @@ def main_page(submitted: bool, num_outputs: int,
                 # Calling the replicate API to get the image
                 # with generated_images_placeholder.container():
                 all_images = []  # List to store all generated images
-                output = generate_image(model)
+
+                if scheduler == "Shoe":
+                    label = torch.tensor([0]).repeat(num_outputs)
+                elif scheduler == "Boot":
+                    label = torch.tensor([1]).repeat(num_outputs)
+                else:
+                    label = torch.tensor([2]).repeat(num_outputs)
+                
+
+                # "GAN-C","GAN-NC","cDCGAN-64-C","cDCGAN-128-NC","CWGAN-64-F-NC","CWGAN-64-F-C","CWGAN-64-C","CWGAN-64-NC", "CWGAN-128-F-C","CWGAN-128-C","CWGAN-128-NC"
+                if refine=="GAN-C":
+                    z_dim=64
+                    model = gen_cGAN_Colored_128
+                    # gans=True
+                # elif refine=="GAN-NC":
+                #     z_dim=64
+                #     model = gen_cGAN_Gray_128
+                    # gans=True
+                else:
+                    z_dim=100
+                    # gans=False
+                
+                if refine=="cDCGAN-64-C":
+                    model = gen_cDCGAN_Colored_Flip_64
+                elif refine=="cDCGAN-128-NC":
+                    model = gen_cDCGAN_Gray_Flip_128
+                elif refine=="CWGAN-64-F-NC":
+                    model = gen_WGAN_Gray_Flip_64
+                elif refine=="CWGAN-64-F-C":
+                    model = gen_CWGAN_Colored_Flip_64_lr_2e_4
+                elif refine=="CWGAN-64-C":
+                    model = gen_CWGAN_Colored_No_Flip_64
+                elif refine=="CWGAN-64-NC":
+                    model = gen_WGAN_Gray_Flip_64
+                elif refine=="CWGAN-128-F-C":
+                    model = gen_CWGAN_Colored_Flip_128
+                elif refine=="CWGAN-128-C":
+                    model = gen_CWGAN_Colored_No_Flip_128
+                # elif refine=="CWGAN-128-NC":
+                #     model = gen_CWGAN_Colored_Flip_128
+                                
+
+                    
+
+                fake_noise=get_noise(z_dim)
+
+                output = generate_image(model,fake_noise,label)
                 output = output[0]
                 output = output.cpu()
-                output = transform(output)
+                # output = transform(output)
 
                 if output:
                     st.toast(
@@ -286,8 +358,8 @@ def main():
     It retrieves the user inputs from the sidebar, and passes them to the main page function.
     The main page function then generates images based on these inputs.
     """
-    submitted, num_outputs, scheduler, Colored, refine = configure_sidebar()
-    main_page(submitted, num_outputs, scheduler, Colored, refine)
+    submitted, num_outputs, scheduler, refine = configure_sidebar()
+    main_page(submitted, num_outputs, scheduler, refine)
 
 
 if __name__ == "__main__":
