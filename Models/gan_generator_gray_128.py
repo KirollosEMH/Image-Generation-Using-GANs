@@ -1,7 +1,9 @@
 import torch
 import torch.nn as nn
 
-# Gan_Generator_Colured GAN 128 Gray 
+# Gan_Generator_Colured GAN 128 Gray
+
+
 class Gan_Generator_Gray(nn.Module):
     def __init__(self, z_dim):
         super(Gan_Generator_Gray, self).__init__()
@@ -17,5 +19,5 @@ class Gan_Generator_Gray(nn.Module):
         )
 
     def forward(self, x):
-        return self.gen(x).view(-1, 1, 128, 128)  # Reshape to N x 1 x 128 x 128
-
+        # Reshape to N x 1 x 128 x 128
+        return self.gen(x).view(-1, 1, 128, 128)
