@@ -2,7 +2,14 @@
 
 Models for generating images using Generative Adversarial Networks (GANs).
 
-[Click here](https://drive.google.com/drive/folders/1SnskTT3HkuhARdO4dAchqdpNR-WzOQbx?usp=sharing)
+[Click here](https://drive.google.com/drive/folders/1SnskTT3HkuhARdO4dAchqdpNR-WzOQbx?usp=sharing) To see the models
+
+## Team Members
+> - Ahmed Nezar
+> - Seif Yasser
+> - Kirollos Ehab
+> - Abdulrahman Hesham
+> - Omar Ahmed
 
 ## Contents
 > - GANs-Colored
