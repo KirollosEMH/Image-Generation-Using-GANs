@@ -5,6 +5,10 @@ Models for generating images using Generative Adversarial Networks (GANs).
 [Click here](https://drive.google.com/drive/folders/1SnskTT3HkuhARdO4dAchqdpNR-WzOQbx?usp=sharing)
 
 ## Contents
+> - GANs-Colored
+> - GANs-Gray-Scaled
+> - cDCGAN-Colored-64
+> - cDCGAN-Gray-Scaled-128
 > - CWGANS-GP-Coloured-Flip-128
 > - CWGANS-GP-Coloured-No-Flip-128
 > - CWGANS-GP-Gray-Scaled-No-Flip-128
@@ -12,8 +16,7 @@ Models for generating images using Generative Adversarial Networks (GANs).
 > - CWGANS-GP-2-Colored-64-Flip-lr-5e-4
 > - CWGANS-GP-2-Colored-64-No-Flip
 > - CWGANS-Gray-Scaled-GP-64-Flip
-> - Colored
-> - Gray-Scaled
+
 
 -------
 
