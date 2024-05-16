@@ -62,7 +62,7 @@ path_cGAN_Colored_128 = 'Trained-Models\\GAN_Colored_128_Gen_750.pth'
 # DCGANs Flipped
 #######################################
 path_cDCGAN_Colored_Flip_64 = 'Trained-Models\\CDCGAN_Colored_64_Flipped_Gen_500.pth'
-path_cDCGAN_Gray_Flip_128 = 'Trained-Models\CDC_gen_450.pth'
+path_cDCGAN_Gray_Flip_128 = 'Trained-Models\\CDC_gen_450.pth'
 
 
 # WGANs Gray
@@ -113,7 +113,8 @@ print("Models Loaded Successfully")
 gen_cGAN_Colored_128_Model = Gan_Generator_Colured(
     64)
 gen_cGAN_Colored_128_Model.load_state_dict(gen_cGAN_Colored_128)
-
+if torch.cuda.is_available():
+    gen_cGAN_Colored_128_Model.cuda()
 gen_cGAN_Colored_128_Model.eval()
 # gen_cGAN_Gray_128 = Gan_Generator_Gray(64).load_state_dict(gen_cGAN_Gray_128) -> error
 
@@ -183,7 +184,7 @@ def get_noise(no_outputs, z_dim, device='cuda'):
 
 
 def get_noise_2(n_samples, z_dim, device='cuda'):
-    return torch.randn(n_samples, z_dim, 1, 1, device=device)
+    return torch.randn(n_samples, z_dim, device=device)
 
 
 # fake_noise=get_noise(2,100)
@@ -267,23 +268,25 @@ def main_page(submitted: bool, num_outputs: int,
                     label = torch.tensor([2]).repeat(num_outputs)
 
                 # "GAN-C","GAN-NC","cDCGAN-64-C","cDCGAN-128-NC","CWGAN-64-F-NC","CWGAN-64-F-C","CWGAN-64-C","CWGAN-64-NC", "CWGAN-128-F-C","CWGAN-128-C","CWGAN-128-NC"
-                z_dim = 100
+                # z_dim = 100
                 num_outputs = int(num_outputs)
                 flag = False
-                if refine == "GAN-C":
-                    z_dim = 64
-                    model = gen_cGAN_Colored_128_Model
-                    flag = True
-                # elif refine=="GAN-NC":
-                #     z_dim=64
-                #     model = gen_cGAN_Gray_128
-                else:
-                    z_dim = 100
-                    # gans=False
+                # if refine == "GAN-C":
+                #     z_dim = 64
+                #     model = gen_cGAN_Colored_128_Model
+                #     flag = True
+                # # elif refine=="GAN-NC":
+                # #     z_dim=64
+                # #     model = gen_cGAN_Gray_128
+                # else:
+                #     z_dim = 100
+                #     # gans=False
 
                 # model = gen_cDCGAN_Colored_Flip_64
-
-                if refine == "cDCGAN-64-C":
+                if refine == "GAN-C":
+                    model = gen_cGAN_Colored_128_Model
+                    flag = True
+                elif refine == "cDCGAN-64-C":
                     model = gen_cDCGAN_Colored_Flip_64_Model
                 elif refine == "cDCGAN-128-NC":
                     model = gen_cDCGAN_Gray_Flip_128_Model
@@ -305,6 +308,8 @@ def main_page(submitted: bool, num_outputs: int,
 
                 output = generate_image(model, flag, num_outputs, label)
                 # output = output[0]
+                if refine == "GAN-C":
+                    output = output.cpu()
 
                 img_grid = make_grid(output[:num_outputs], normalize=True)
                 plt.imshow(img_grid.permute(1, 2, 0))

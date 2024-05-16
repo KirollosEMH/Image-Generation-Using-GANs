@@ -17,5 +17,5 @@ class Gan_Generator_Colured(torch.nn.Module):
         )
 
     def forward(self, x):
-        # Reshape to N x 3 x 128 x 128
+        # Reshape to N x 1 x 128 x 128
         return self.gen(x).view(-1, 3, 128, 128)
