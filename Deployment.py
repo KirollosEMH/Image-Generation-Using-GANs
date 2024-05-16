@@ -238,7 +238,7 @@ def configure_sidebar() -> None:
                     "Number of images to Generate", value=1, min_value=1, max_value=64)
 
                 refine = st.selectbox(
-                    "Select GANs Model to use", ("GAN-C", "GAN-NC", "cDCGAN-64-C", "cDCGAN-128-NC", "CWGAN-64-F-NC", "CWGAN-64-F-C", "CWGAN-64-C", "CWGAN-64-NC", "CWGAN-128-F-C", "CWGAN-128-C", "CWGAN-128-NC"))
+                    "Select GANs Model to use", ("GAN-C", "cDCGAN-64-C", "cDCGAN-128-NC", "CWGAN-64-F-NC", "CWGAN-64-F-C", "CWGAN-64-C", "CWGAN-64-NC", "CWGAN-128-F-C", "CWGAN-128-C", "CWGAN-128-NC"))
                 scheduler = st.selectbox(
                     'Image to Generate', ('Boot', 'Sandal', 'Shoe'))
 
