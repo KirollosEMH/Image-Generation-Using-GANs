@@ -1,1 +1,3 @@
-# Image-Generation-Using-GANs
+## Contents 
+> - Colored
+> - Gray-Scaled
