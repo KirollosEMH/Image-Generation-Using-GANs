@@ -1,4 +1,8 @@
 ## Contents
+> - CWGANS-GP-Coloured-Flip-128
+> - CWGANS-GP-Coloured-No-Flip-128
+> - CWGANS-GP-Gray-Scaled-No-Flip-128
+=======
 > - CWGANS-GP-2-Colored-64-Flip-lr-2e-4
 > - CWGANS-GP-2-Colored-64-Flip-lr-5e-4
 > - CWGANS-GP-2-Colored-64-No-Flip
