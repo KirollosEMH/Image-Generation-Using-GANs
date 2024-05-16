@@ -1,3 +1,6 @@
+## Contents 
+> - Colored
+> - Gray-Scaled
 # Image-Generation-Using-GANs
 
 Models for generating images using Generative Adversarial Networks (GANs).
