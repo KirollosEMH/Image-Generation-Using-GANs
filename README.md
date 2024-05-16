@@ -93,7 +93,7 @@ GANs Architectures for the Wasserstein GANs
 
 ![image](https://github.com/KirollosEMH/Image-Generation-Using-GANs/assets/126684081/a0d15491-e9d7-4965-b847-7229b277fe45)
 
-> > - #### 128 Without Flip
+> > #### 128 Without Flip
 
 ![image](https://github.com/KirollosEMH/Image-Generation-Using-GANs/assets/126684081/601949b3-5fc2-4429-bd7b-4efd167788df)
 
